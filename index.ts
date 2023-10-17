@@ -13,7 +13,7 @@ const securityGroup = ["sg-06c29f2d69ec5015c"]
 // Create an AWS resource (S3 Bucket)
 const bucket = new aws.s3.Bucket("BandLab-bucket");
 
-// Export the name of the bucket
+// Export the name of the bucket and check if the bucket is created
 export const bucketName = bucket.id;
 
 // Create a KMS Key for encryption
