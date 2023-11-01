@@ -49,7 +49,7 @@ jobs:
         path: security_report.sarif
 
     - name: Dotnet Publish
-      run: dotnet publish  ${{ inputs.SOLUSTION_FILE_PATH }}/${{ inputs.WEBAPP_NAME }}.sln -c Release -o ${{env.DOTNET_ROOT}}/${{ inputs.WEBAPP_NAME }} --no-build
+      run: dotnet publish  ${{ inputs.SOLUTION_FILE_PATH }}/${{ inputs.WEBAPP_NAME }}.sln -c Release -o ${{env.DOTNET_ROOT}}/${{ inputs.WEBAPP_NAME }} --no-build
         
     - name: Set Build Version
       id: version
