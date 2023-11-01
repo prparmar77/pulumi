@@ -11,6 +11,6 @@ jobs:
       # config-path: .github/labeler.yml
       WEBAPP_NAME: "dotnet"
       DOTNET_VERSION: "6.0.x"
-      SOLUTION_FILE_PATH: "."
+      SOLUTION_FILE_PATH: "./.."
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
