@@ -40,7 +40,7 @@ jobs:
       run: dotnet format ${{ inputs.SOLUTION_FILE_PATH }}/${{ inputs.WEBAPP_NAME }}.sln --severity error --verify-no-changes --verbosity diagnostic --no-restore
 
     - name: Install and Run Security-Scan
-      run: dotnet tool install --global security-scan  && security-scan ${{ inputs.SOLUSTION_FILE_PATH }}/${{ inputs.WEBAPP_NAME }}.sln  --excl-proj=**/*Test*/** --export=security_report.sarif
+      run: dotnet tool install --global security-scan  && security-scan ${{ inputs.SOLUTION_FILE_PATH }}/${{ inputs.WEBAPP_NAME }}.sln  --excl-proj=**/*Test*/** --export=security_report.sarif
 
     - name: Upload Security Report
       uses: actions/upload-artifact@v3
