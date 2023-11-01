@@ -1,28 +1,112 @@
-# This workflow will build a .NET project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
-
-name: .NET
+name: CI Pipeline
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_call:
+    inputs:
+      WEBAPP_NAME:
+        required: true
+        type: string  
+      DOTNET_VERSION:
+        type: string
+      SOLUTION_FILE_PATH:
+        required: true
+        type: string      
+    secrets:
+      token:
+        required: true
 
 jobs:
-  build:
-
+  DotNet_Build:
     runs-on: ubuntu-latest
 
+    outputs:
+      build_version: ${{ steps.version.outputs.build_version }}
+      
     steps:
     - uses: actions/checkout@v3
-    - name: Setup .NET
+    
+    - name: setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x
-    - name: Restore dependencies
+        dotnet-version: ${{ inputs.DOTNET_VERSION }}
+      
+    - name: Restore Dependencies
       run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+
+    - name: Build ${{ inputs.WEBAPP_NAME }}
+      run: dotnet build  ${{ inputs.SOLUTION_FILE_PATH }}/${{ inputs.WEBAPP_NAME }}.sln --configuration Release
+
+    - name: Test ${{ inputs.WEBAPP_NAME }}
+      run: dotnet test ${{ inputs.SOLUTION_FILE_PATH }}/${{ inputs.WEBAPP_NAME }}.sln --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage && ls
+
+    - name: Code Coverage Report
+      uses: irongut/CodeCoverageSummary@v1.3.0
+      with:
+        filename: coverage/**/coverage.cobertura.xml
+        badge: true
+        format: 'markdown'
+        output: 'both'
+
+    - name: Add Coverage PR Comment
+      uses: marocchino/sticky-pull-request-comment@v2
+      if: github.event_name == 'pull_request'
+      with:
+        recreate: true
+        path: code-coverage-results.md
+
+    - name: Write to Job Summary
+      run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
+
+    - name: Run Linters
+      run: dotnet format ${{ inputs.SOLUTION_FILE_PATH }}/${{ inputs.WEBAPP_NAME }}.sln --severity error --verify-no-changes --verbosity diagnostic --no-restore
+
+    - name: Install and Run Security-Scan
+      run: dotnet tool install --global security-scan  && security-scan ${{ inputs.SOLUSTION_FILE_PATH }}/${{ inputs.WEBAPP_NAME }}.sln  --excl-proj=**/*Test*/** --export=security_report.sarif
+
+    - name: Upload Security Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: security_report.sarif
+        path: security_report.sarif
+
+    - name: Dotnet Publish
+      run: dotnet publish  ${{ inputs.SOLUSTION_FILE_PATH }}/${{ inputs.WEBAPP_NAME }}.sln -c Release -o ${{env.DOTNET_ROOT}}/${{ inputs.WEBAPP_NAME }} --no-build
+        
+    - name: Set Build Version
+      id: version
+      run: |
+        echo "build_version=${{ inputs.WEBAPP_NAME }}-${{ github.run_id }}-$(date +%d-%m-%Y-%H%M%S)" >> $GITHUB_OUTPUT |
+        echo "build_version=${{ inputs.WEBAPP_NAME }}-${{ github.run_id }}-$(date +%d-%m-%Y-%H%M%S)" >> $GITHUB_ENV
+    
+    # - name: Test with environment variables
+    #   run: echo "$build_version  and ${{ env.build_version }}"
+
+    - name: Upload Artifact for Deployment Job
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.build_version }}
+        path: ${{env.DOTNET_ROOT}}/${{ inputs.WEBAPP_NAME }}
+
+    # - name: Perform CodeQL Analysis
+    #   uses: github/codeql-action/analyze@v2
+    #   with:
+    #     category: "/language: [ 'csharp', 'javascript', 'cpp', 'csharp' ]"
+     
+  DevDeploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    needs:  [DotNet_Build]
+    steps:
+    - name: Debug
+      run: echo "yet not ${{needs.DotNet_Build.outputs.build_version}}"
+      # with:
+      #   BUILD_VERSION: ${{needs.DotNet_Build.outputs.build_version}}
+      
+    - name: Download The Release Artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{needs.DotNet_Build.outputs.build_version}}
+        path: /tmp
+
+    - name: Dev Deploy
+      run: echo "yet not started"
