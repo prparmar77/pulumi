@@ -1,0 +1,21 @@
+name: SampleAPI
+
+on:
+  push:
+    branches:
+      - '**/**'
+    paths:
+      - 'dotnet/**'
+      - 'dotnet.Test/**'
+      - 'dotnet.sln' 
+      - '.github/workflows/ci_template.yml'
+jobs:
+  CI:
+    uses: ./.github/workflows/ci_template.yml
+    with:
+      # config-path: .github/labeler.yml
+      WEBAPP_NAME: "dotnet"
+      DOTNET_VERSION: "6.0.x"
+      SOLUTION_FILE_PATH: "."
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
