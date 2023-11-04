@@ -16,6 +16,11 @@ on:
 
 jobs:
   buildband:
+   runs-on: ubuntu-latest
+   steps:
+    - uses: actions/checkout@v3 
+    - name: build access
+      run: echo "dummy build extract"
   Deploy:
     runs-on: ubuntu-latest
       # with:
