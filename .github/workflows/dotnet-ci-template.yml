@@ -57,7 +57,7 @@ jobs:
       id: version
       run: |
         echo "build_version=${{ inputs.WEBAPP_NAME }}-`grep '<Version>' < ${{ inputs.SOLUTION_FILE_PATH }}/${{ inputs.WEBAPP_NAME }}.csproj | sed 's/.*<Version>\(.*\)<\/Version>/\1/'`-${{ github.run_id }}-$(date +%d-%m-%Y-%H%M%S)" >> $GITHUB_OUTPUT |
-        echo "build_version=${{ inputs.WEBAPP_NAME }}-`grep '<Version>' < ${{ inputs.SOLUTION_FILE_PATH }}/${{ inputs.WEBAPP_NAME }}.csproj | sed 's/.*<Version>\(.*\)<\/Version>/\1/'`-${{ github.run_id }}-${{ github.run_id }}-$(date +%d-%m-%Y-%H%M%S)" >> $GITHUB_ENV
+    # echo "build_version=${{ inputs.WEBAPP_NAME }}-`grep '<Version>' < ${{ inputs.SOLUTION_FILE_PATH }}/${{ inputs.WEBAPP_NAME }}.csproj | sed 's/.*<Version>\(.*\)<\/Version>/\1/'`-${{ github.run_id }}-${{ github.run_id }}-$(date +%d-%m-%Y-%H%M%S)" >> $GITHUB_ENV
     
     # - name: Test with environment variables
     #   run: echo "$build_version  and ${{ env.build_version }}"
