@@ -1,4 +1,4 @@
-name: Bands Artifact
+name: Manual Bands Artifact Deploy
 
 on:
   workflow_dispatch:
