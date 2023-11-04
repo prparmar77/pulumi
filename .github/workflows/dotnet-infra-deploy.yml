@@ -5,7 +5,7 @@ on:
 
 jobs:
   CD:
-    uses: .github/workflows/dotnet-cd-template.yml
+    uses: ./.github/workflows/dotnet-cd-template.yml
     with:
       # config-path: .github/labeler.yml
       ENV: "dev"
