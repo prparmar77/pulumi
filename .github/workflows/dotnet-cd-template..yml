@@ -31,22 +31,22 @@ jobs:
     - name: Deploy
       run: echo "Deploying to Lambda using Pulumi Scripts"
     - name: List available pulumi stacks
-        working-directory: "./infra"
-        run: pulumi stack ls
-        env:
+      working-directory: "./infra"
+      run: pulumi stack ls
+      env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     - name: List available pulumi stacks
-        working-directory: "./infra"
-        run: pulumi config set RELEASE_ARTIFACT ${{ inputs.RELEASE_ARTIFACT }}
-        env:
+      working-directory: "./infra"
+      run: pulumi config set RELEASE_ARTIFACT ${{ inputs.RELEASE_ARTIFACT }}
+      env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     - name: lambda pulumi stack deploy
-        uses: pulumi/actions@v4
-        with:
+      uses: pulumi/actions@v4
+      with:
           command: up
           work-dir: "./infra"
           stack-name: dotnet/webinfracd
           upsert: true
-        env:
+      env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
