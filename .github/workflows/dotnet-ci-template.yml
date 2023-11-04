@@ -3,7 +3,8 @@ name: CI Pipeline
 on:
   workflow_call:
     inputs:
-      ENV: string
+      ENV: 
+        type: string
       WEBAPP_NAME:
         required: true
         type: string  
