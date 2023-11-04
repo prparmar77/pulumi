@@ -1,0 +1,51 @@
+name: CI Pipeline
+
+on:
+  workflow_call:
+    inputs:
+      ENV: 
+        type: string
+      WEBAPP_NAME:
+        required: true
+        type: string  
+      RELEASE_ARTIFACT:
+        type: string
+    secrets:
+      token:
+        required: true
+
+jobs:
+   
+  Deploy:
+    runs-on: ubuntu-latest
+      # with:
+      #   BUILD_VERSION: ${{needs.DotNet_Build.outputs.build_version}}
+      
+    - name: Download The Release Artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ inputs.RELEASE_ARTIFACT }}
+        path: /tmp
+
+    - name: Deploy
+      run: echo "Deploying to Lambda using Pulumi Scripts"
+    - name: List available pulumi stacks
+        working-directory: "./infra"
+        run: pulumi stack ls
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+    - name: List available pulumi stacks
+        working-directory: "./infra"
+        run: pulumi config set RELEASE_ARTIFACT ${{ inputs.RELEASE_ARTIFACT }}
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+    - name: lambda pulumi stack deploy
+        uses: pulumi/actions@v4
+        with:
+          command: up
+          work-dir: "./infra"
+          stack-name: dotnet/webinfracd
+          upsert: true
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+

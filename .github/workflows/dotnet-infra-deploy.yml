@@ -1,0 +1,17 @@
+name: Bands Artifact
+
+on:
+  workflow_dispatch:
+
+jobs:
+  CI:
+    uses: ./.github/workflows/dotnet-cd-template.yml
+    with:
+      # config-path: .github/labeler.yml
+      ENV: "dev"
+      WEBAPP_NAME: "dotnet"
+      DOTNET_VERSION: "6.0.x"
+      SOLUTION_FILE_PATH: "."
+      RELEASE_ARTIFACT: "dotnet-1.0.5-6755678908-04-11-2023-152404"
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}

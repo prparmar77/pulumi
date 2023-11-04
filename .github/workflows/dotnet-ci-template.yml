@@ -89,5 +89,5 @@ jobs:
         name: ${{needs.DotNet_Build.outputs.build_version}}
         path: /tmp
 
-    - name: Dev Deploy
-      run: echo "yet not started"
+    - name: Deploy
+      run: echo "Deploying to Lambda using Pulumi Scripts"
