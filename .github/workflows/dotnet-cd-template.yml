@@ -20,8 +20,19 @@ jobs:
     runs-on: ubuntu-latest
       # with:
       #   BUILD_VERSION: ${{needs.DotNet_Build.outputs.build_version}}
+    needs:  [DotNet_Build]
     steps:
     - uses: actions/checkout@v3 
+    - name: Debug
+      run: echo "${{needs.DotNet_Build.outputs.build_version}}"
+      # with:
+      #   BUILD_VERSION: ${{needs.DotNet_Build.outputs.build_version}}
+      
+    - name: Download The Release Artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{needs.DotNet_Build.outputs.build_version}}
+        path: /tmp
     - name: Download The Release Artifact
       uses: actions/download-artifact@v3
       with:
