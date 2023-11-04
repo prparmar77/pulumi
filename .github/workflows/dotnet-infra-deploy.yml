@@ -4,14 +4,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  CI:
+  CD:
     uses: ./.github/workflows/dotnet-cd-template.yml
     with:
       # config-path: .github/labeler.yml
       ENV: "dev"
-      WEBAPP_NAME: "dotnet"
-      DOTNET_VERSION: "6.0.x"
-      SOLUTION_FILE_PATH: "."
       RELEASE_ARTIFACT: "dotnet-1.0.5-6755678908-04-11-2023-152404"
+      WEBAPP_NAME: "dotnet"
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
