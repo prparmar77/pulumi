@@ -6,7 +6,7 @@ on:
       - '**/**'
 jobs:
   CI:
-    uses: ./.github/workflows/dotnet.yml
+    uses: ./.github/workflows/dotnet-ci-template.yml
     with:
       # config-path: .github/labeler.yml
       ENV: "dev"
