@@ -15,31 +15,9 @@ on:
         required: true
 
 jobs:
-  buildband:
-   runs-on: ubuntu-latest
-   steps:
-    - uses: actions/checkout@v3 
-    - name: build access
-      run: echo "dummy build extract"
-  Deploy:
-    runs-on: ubuntu-latest
-      # with:
-      #   BUILD_VERSION: ${{needs.DotNet_Build.outputs.build_version}}
-    needs:  [DotNet_Build]
-    steps:
-    - uses: actions/checkout@v3 
-    - name: Debug
-      run: echo "${{needs.DotNet_Build.outputs.build_version}}"
-      # with:
-      #   BUILD_VERSION: ${{needs.DotNet_Build.outputs.build_version}}
-      
     - name: Download The Release Artifact
       uses: actions/download-artifact@v3
-      with:
-        name: ${{needs.DotNet_Build.outputs.build_version}}
-        path: /tmp
-    - name: Download The Release Artifact
-      uses: actions/download-artifact@v3
+      id: download
       with:
         name: ${{ inputs.RELEASE_ARTIFACT }}
         path: /tmp
@@ -53,7 +31,7 @@ jobs:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     - name: List available pulumi stacks
       working-directory: "./infra"
-      run: pulumi config set RELEASE_ARTIFACT ${{ inputs.RELEASE_ARTIFACT }}
+      run: pulumi config set RELEASE_ARTIFACT ${{steps.download.outputs.download-path}}
       env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     - name: lambda pulumi stack deploy
