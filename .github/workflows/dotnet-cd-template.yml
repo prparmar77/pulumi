@@ -20,6 +20,7 @@ jobs:
   DotNet_Deploy:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v3
     - name: Download The Release Artifact
       uses: dawidd6/action-download-artifact@v2
       id: download
@@ -27,7 +28,7 @@ jobs:
         run_id: ${{ inputs.RUN_ID }}
         name: ${{ inputs.RELEASE_ARTIFACT }}
         path: /tmp
-
+    
     - name: Deploy
       run: echo "Deploying to Lambda using Pulumi Scripts " ${{steps.download.outputs.download-path}}
     - name: List available pulumi stacks
