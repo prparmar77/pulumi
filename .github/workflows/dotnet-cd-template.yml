@@ -26,7 +26,7 @@ jobs:
         path: /tmp
 
     - name: Deploy
-      run: echo "Deploying to Lambda using Pulumi Scripts"
+      run: echo "Deploying to Lambda using Pulumi Scripts " ${{steps.download.outputs.download-path}}
     - name: List available pulumi stacks
       working-directory: "./infra"
       run: pulumi stack ls
