@@ -9,7 +9,7 @@ jobs:
     with:
       # config-path: .github/labeler.yml
       ENV: "dev"
-      RELEASE_ARTIFACT: "dotnet-1.0.5-6755678908-04-11-2023-152404"
+      RELEASE_ARTIFACT: "dotnet-1.0.5-6765744570-06-11-2023-025849"
       WEBAPP_NAME: "dotnet"
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
