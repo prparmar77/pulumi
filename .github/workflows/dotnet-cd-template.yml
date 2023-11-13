@@ -40,6 +40,13 @@ jobs:
             aws sts get-caller-identity
     - name: Deploy
       run: echo "Deploying to Lambda using Pulumi Scripts " ${{steps.download.outputs.download-path}}
+    - name: Setup npm for pulumi
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18'
+    - name: Install npm dependencies
+      working-directory: ./infra
+      run: npm install
     - name: List available pulumi stacks
       working-directory: "./infra"
       run: pulumi stack ls
