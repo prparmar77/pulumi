@@ -45,18 +45,23 @@ jobs:
       run: pulumi stack ls
       env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-    - name: List available pulumi stacks
+    - name: Init Pulumi Stack
+      working-directory: "./infra"
+      run: pulumi stack select ${{inputs.ENV}} -c
+      env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+    - name: Set config for stack
       working-directory: "./infra"
       run: pulumi config set RELEASE_ARTIFACT ${{ steps.download.outputs.download-path }}
       env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+              PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+        
     - name: lambda pulumi stack deploy
       uses: pulumi/actions@v4
       with:
           command: up
           work-dir: "./infra"
           stack-name: ${{inputs.ENV}}
-          upsert: true
       env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
