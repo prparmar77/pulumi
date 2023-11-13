@@ -22,13 +22,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: Create stage directory for the artifact
+      run: mkdir /tmp/${{inputs.WEBAPP_NAME}}
     - name: Download The Release Artifact
       uses: dawidd6/action-download-artifact@v2
       id: download
       with:
         run_id: ${{ inputs.RUN_ID }}
         name: ${{ inputs.RELEASE_ARTIFACT }}
-        path: /tmp
+        path: /tmp/${{inputs.WEBAPP_NAME}}
     - name: Configure AWS Credentials 
       uses: aws-actions/configure-aws-credentials@v1.7.0
       with:
@@ -45,20 +47,20 @@ jobs:
       with:
         node-version: '18'
     - name: Install npm dependencies
-      working-directory: ./infra
+      working-directory: "net/pulumi/infra"
       run: npm install
     - name: List available pulumi stacks
-      working-directory: "./infra"
+      working-directory: "net/pulumi/infra"
       run: pulumi stack ls
       env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     - name: Init Pulumi Stack
-      working-directory: "./infra"
+      working-directory: "net/pulumi/infra"
       run: pulumi stack select ${{inputs.ENV}} -c
       env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     - name: Set config for stack
-      working-directory: "./infra"
+      working-directory: "net/pulumi/infra"
       run: pulumi config set RELEASE_ARTIFACT ${{ steps.download.outputs.download-path }}
       env:
               PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
@@ -67,7 +69,7 @@ jobs:
       uses: pulumi/actions@v4
       with:
           command: up
-          work-dir: "./infra"
+          work-dir: "net/pulumi/infra"
           stack-name: ${{inputs.ENV}}
       env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
