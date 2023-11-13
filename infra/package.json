@@ -1,5 +1,5 @@
 {
-    "name": "project",
+    "name": "dotnet-proj",
     "main": "index.ts",
     "devDependencies": {
         "@types/node": "^16"
