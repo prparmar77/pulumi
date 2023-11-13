@@ -28,7 +28,13 @@ jobs:
         run_id: ${{ inputs.RUN_ID }}
         name: ${{ inputs.RELEASE_ARTIFACT }}
         path: /tmp
-    
+    - name: Configure AWS Credentials 
+      uses: aws-actions/configure-aws-credentials@v1.7.0
+      with:
+          aws-region: ap-southeast-1
+          role-to-assume: arn:aws:iam::914917921893:role/GitHubAction-AssumeRoleWithAction
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+
     - name: Deploy
       run: echo "Deploying to Lambda using Pulumi Scripts " ${{steps.download.outputs.download-path}}
     - name: List available pulumi stacks
