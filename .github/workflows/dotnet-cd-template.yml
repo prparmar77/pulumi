@@ -69,6 +69,8 @@ jobs:
         pulumi config set RELEASE_ARTIFACT ${{ steps.download.outputs.download-path }}
         pulumi config set AWS_REGION ${{ inputs.AWS_REGION}}
         pulumi config set ACCOUNT_ID ${{ inputs.ACCOUNT_ID}}
+        pulumi config set WEBAPP_NAME ${{ inputs.WEBAPP_NAME}}
+        
       env:
               PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
         
