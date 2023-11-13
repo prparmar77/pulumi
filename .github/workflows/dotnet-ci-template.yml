@@ -72,22 +72,3 @@ jobs:
     #   uses: github/codeql-action/analyze@v2
     #   with:
     #     category: "/language: [ 'csharp', 'javascript', 'cpp', 'csharp' ]"
-     
-  DevDeploy:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    needs:  [DotNet_Build]
-    steps:
-    - name: Debug
-      run: echo "yet not ${{needs.DotNet_Build.outputs.build_version}}"
-      # with:
-      #   BUILD_VERSION: ${{needs.DotNet_Build.outputs.build_version}}
-      
-    - name: Download The Release Artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: ${{needs.DotNet_Build.outputs.build_version}}
-        path: /tmp
-
-    - name: Deploy
-      run: echo "Deploying to Lambda using Pulumi Scripts"
