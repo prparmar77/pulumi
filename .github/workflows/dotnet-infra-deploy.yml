@@ -8,7 +8,7 @@ jobs:
     uses: ./.github/workflows/dotnet-cd-template.yml
     with:
       # config-path: .github/labeler.yml
-      ENV: "dev"
+      ENV: "uat"
       RELEASE_ARTIFACT: "dotnet-1.0.5-6765744570-06-11-2023-025849"
       RUN_ID: "6765744570"
       WEBAPP_NAME: "dotnet"
